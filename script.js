@@ -49,8 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Load recent activity
     loadRecentActivity();
 
-    // Test switch to Absences section
-    // window.switchSection('Absences');
+    
 });
 
 
@@ -84,15 +83,6 @@ function loadStudents() {
     if (!DivStudent) return;
 
     DivStudent.innerHTML = '';
-
-    // if (studentsData.length === 0) {
-    //     DivStudent.innerHTML = `
-    //         <tr>
-    //             <td colspan="6" class="no-data">No students found</td>
-    //         </tr>
-    //     `;
-    //     return;
-    // }
 
     studentsData.forEach(student => {
         createStudentRow(student);
@@ -199,74 +189,6 @@ function createStudentRow(student) {
 
 
 
-// function displayStudent() {
-//     if (!InputName || !ProgramSelect || !levelSelect) return;
-
-//     const name = InputName.value.trim();
-//     const program = ProgramSelect.value;
-//     const level = levelSelect.value;
-
-//     if (!name || !program || !level) {
-//         alert('Please fill in all fields');
-//         return;
-//     }
-
-//     // Generate new student ID
-//     const newId = studentsData.length > 0 ? 
-//         Math.max(...studentsData.map(s => s.id)) + 1 : 1;
-
-//     // Create student object
-//     const newStudent = {
-//         id: newId,
-//         name: name,
-//         program: program,
-//         level: level,
-//         avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff`
-//     };
-
-//     // Add to data
-//     studentsData.push(newStudent);
-
-//     // Save to localStorage
-//     localStorage.setItem('studentsData', JSON.stringify(studentsData));
-
-//     // Add to table
-//     createStudentRow(newStudent);
-
-//     // Clear form
-//     InputName.value = '';
-//     ProgramSelect.selectedIndex = 0;
-//     levelSelect.selectedIndex = 0;
-
-//     // Update count
-//     updateStudentCount();
-
-//     // Add to recent activity
-//     addRecentActivity('student-added', `New student "${name}" registered`, new Date());
-
-//     alert('Student added successfully!');
-// }
-
-// edit student
-
-
-
-// function editStudent(studentId) {
-//     const student = studentsData.find(s => s.id === studentId);
-//     if (!student) {
-//         alert('Student not found!');
-//         return;
-//     }
-
-//     // Fill form with student data
-//     document.getElementById('edit-student-id').value = student.id;
-//     document.getElementById('edit-student-name').value = student.name;
-//     document.getElementById('edit-student-program').value = student.program;
-//     document.getElementById('edit-student-level').value = student.level;
-
-//     // Open modal
-//     openEditModal();
-// }
 
 async function displayStudent() {
     // خذ القيم مباشرة
@@ -311,8 +233,6 @@ async function displayStudent() {
 }
 
 
-
-
 async function editStudent(studentId) {
     const student = studentsData.find(s => s.id === studentId);
     if (!student) {
@@ -348,48 +268,7 @@ function closeEditModal() {
         document.getElementById('edit-student-level').value = '';
     }
 }
-// save change in local storage and in the table
-// function saveStudentChanges() {
-//     const studentId = parseInt(document.getElementById('edit-student-id').value);
-//     const name = document.getElementById('edit-student-name').value.trim();
-//     const program = document.getElementById('edit-student-program').value;
-//     const level = document.getElementById('edit-student-level').value;
 
-//     if (!name || !program || !level) {
-//         alert('Please fill all fields');
-//         return;
-//     }
-
-//     // Find student
-//     const student = studentsData.find(s => s.id === studentId);
-//     if (!student) {
-//         alert('Student not found!');
-//         return;
-//     }
-
-//     // Store old name for activity 
-//     const oldName = student.name;
-
-//     // Update student data
-//     student.name = name;
-//     student.program = program;
-//     student.level = level;
-//     student.avatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff`;
-
-//     // Save to localStorage
-//     localStorage.setItem('studentsData', JSON.stringify(studentsData));
-
-//     // Reload students table
-//     loadStudents();
-
-//     // Close modal
-//     closeEditModal();
-
-//     // Add to recent activity
-//     addRecentActivity('student-edited', `Student "${oldName}" updated to "${name}"`, new Date());
-
-//     alert('Student updated successfully!');
-// }
 async function saveStudentChanges() {
     const studentId = parseInt(document.getElementById('edit-student-id').value);
     const name = document.getElementById('edit-student-name').value.trim();
@@ -521,31 +400,7 @@ function setupEventListeners() {
     });
 }
 
-// function removeStudent(studentId) {
-//     if (!confirm('Are you sure you want to remove this student?')) return;
 
-//     const student = studentsData.find(s => s.id === studentId);
-
-//     // Remove from data
-//     studentsData = studentsData.filter(student => student.id !== studentId);
-
-//     // Save to localStorage
-//     localStorage.setItem('studentsData', JSON.stringify(studentsData));
-
-//     // Remove from DOM
-//     const row = document.querySelector(`tr[data-student-id="${studentId}"]`);
-//     if (row) row.remove();
-
-//     // Update count
-//     updateStudentCount();
-
-//     // Add to recent activity
-//     if (student) {
-//         addRecentActivity('student-removed', `Student "${student.name}" removed from system`, new Date());
-//     }
-
-//     alert('Student removed successfully!');
-// }
 async function removeStudent(studentId) {
     const student = studentsData.find(s => s.id === studentId);
     if (!student) return;
