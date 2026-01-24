@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Load recent activity
     loadRecentActivity();
 
-    
+
 });
 
 
@@ -85,6 +85,28 @@ function loadStudents() {
     DivStudent.innerHTML = '';
 
     studentsData.forEach(student => {
+        createStudentRow(student);
+    });
+}
+
+function renderStudentsTable(data) {
+    const tbody = document.getElementById('students-table-body');
+    if (!tbody) return;
+
+    tbody.innerHTML = '';
+
+    if (data.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" class="no-data">
+                    No students found
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    data.forEach(student => {
         createStudentRow(student);
     });
 }
@@ -188,8 +210,6 @@ function createStudentRow(student) {
 }
 
 
-
-
 async function displayStudent() {
     // خذ القيم مباشرة
     const name = document.getElementById('student-name').value.trim();
@@ -230,6 +250,7 @@ async function displayStudent() {
     addRecentActivity('student-added', `New student "${name}" registered`, new Date());
 
     await showSuccess('Student added successfully!');
+    
 }
 
 
@@ -381,7 +402,7 @@ function setupEventListeners() {
         searchInput.addEventListener('input', filterStudentsCombined);
 
     }
-     if (programFilter) {
+    if (programFilter) {
         searchInput.addEventListener('change', filterStudentsCombined);
 
     }
@@ -720,64 +741,6 @@ function getCurrentTime() {
     return `${hours}:${minutes}`;
 }
 
-// function handleAbsenceSubmit(event) {
-//     event.preventDefault();
-
-//     const simpleStudent = document.getElementById('simple-student');
-//     const simpleDate = document.getElementById('simple-date');
-//     const simpleTime = document.getElementById('simple-time');
-//     const simpleReason = document.getElementById('simple-reason');
-
-//     if (!simpleStudent || !simpleDate || !simpleTime || !simpleReason) return;
-
-//     const studentName = simpleStudent.value.trim();
-//     const date = simpleDate.value;
-//     const time = simpleTime.value;
-//     const reasonText = simpleReason.value.trim();
-
-//     if (!studentName || !date || !time || !reasonText) {
-//         alert('Please fill all fields');
-//         return;
-//     }
-
-//     // Generate new ID
-//     const newId = absencesData.length > 0 ?
-//         Math.max(...absencesData.map(a => a.id)) + 1 : 1;
-
-//     // Find student to get their program
-//     const student = studentsData.find(s => s.name === studentName);
-//     const program = student ? student.program : "Unknown";
-
-//     // Create new absence
-//     const newAbsence = {
-//         id: newId,
-//         studentName: studentName,
-//         studentAvatar: student ? student.avatar : `https://ui-avatars.com/api/?name=${encodeURIComponent(studentName)}&background=random&color=fff`,
-//         program: program,
-//         date: date,
-//         time: time,
-//         reason: reasonText
-//     };
-
-//     // Add to data
-//     absencesData.push(newAbsence);
-
-//     // Save to localStorage
-//     localStorage.setItem('absencesData', JSON.stringify(absencesData));
-
-//     // Update table and stats
-//     updateAbsencesTable(absencesData);
-//     updateStatistics();
-//     updateTodayAbsences();
-
-//     // Add to recent activity
-//     addRecentActivity('absence-added', `Absence logged for "${studentName}"`, new Date());
-
-//     // Close modal
-//     closeSimpleModal();
-
-//     alert('Absence added successfully!');
-// }
 async function handleAbsenceSubmit(event) {
     event.preventDefault();
 
@@ -940,6 +903,8 @@ window.deleteAbsence = async function (id) {
     await showSuccess('Absence deleted successfully!');
 };
 
+
+
 function updateAbsencesTable(data) {
     const tbody = document.getElementById('absences-table-body');
     if (!tbody) return;
@@ -1068,10 +1033,23 @@ function getProgramName(programCode) {
 }
 
 // Global functions for delete
-window.deleteAbsence = function (id) {
-    if (!confirm('Are you sure you want to delete this absence record?')) return;
-
+window.deleteAbsence = async function (id) {
     const absence = absencesData.find(a => a.id === id);
+    if (!absence) return;
+
+    // Show SweetAlert confirmation
+    const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: `Do you want to delete this absence record for "${absence.studentName}"?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+    });
+
+    if (!result.isConfirmed) return;
 
     // Remove from data
     absencesData = absencesData.filter(a => a.id !== id);
@@ -1086,11 +1064,16 @@ window.deleteAbsence = function (id) {
     updateTodayAbsences();
 
     // Add to recent activity
-    if (absence) {
-        addRecentActivity('absence-removed', `Absence record removed for "${absence.studentName}"`, new Date());
-    }
+    addRecentActivity('absence-removed', `Absence record removed for "${absence.studentName}"`, new Date());
 
-    alert('Absence deleted successfully!');
+    // Show SweetAlert success message
+    await Swal.fire({
+        title: 'Deleted!',
+        text: 'Absence deleted successfully!',
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false
+    });
 };
 
 // Sweet Alert func
@@ -1396,109 +1379,6 @@ function createStudentRow(student) {
     tr.appendChild(tdRemove);
 
     if (DivStudent) DivStudent.appendChild(tr);
-}
-
-function updateAbsencesTable(data) {
-    const tbody = document.getElementById('absences-table-body');
-    if (!tbody) return;
-
-    tbody.innerHTML = '';
-
-    if (data.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="5" class="no-data">No absences found</td>
-            </tr>
-        `;
-        return;
-    }
-
-    data.forEach(absence => {
-        const row = document.createElement('tr');
-        row.dataset.absenceId = absence.id;
-
-        // Student cell with avatar - جعلها قابلة للنقر
-        let tdStudent = document.createElement('td');
-        tdStudent.className = 'student-cell';
-
-        let studentDiv = document.createElement('div');
-        studentDiv.className = 'student-info';
-        studentDiv.style.cursor = 'pointer';
-        studentDiv.title = 'Click to view student profile';
-        studentDiv.onclick = function () {
-            // البحث عن الطالب باستخدام الاسم
-            const student = studentsData.find(s => s.name === absence.studentName);
-            if (student) {
-                openStudentProfile(student.id);
-            }
-        };
-
-        let avatar = document.createElement('img');
-        avatar.src = absence.studentAvatar;
-        avatar.alt = absence.studentName;
-        avatar.className = 'student-avatar';
-        avatar.style.cursor = 'pointer';
-
-        let infoDiv = document.createElement('div');
-        infoDiv.className = 'student-details';
-
-        let nameSpan = document.createElement('span');
-        nameSpan.className = 'student-name';
-        nameSpan.textContent = absence.studentName;
-        nameSpan.style.cursor = 'pointer';
-
-        let programSpan = document.createElement('span');
-        programSpan.className = 'student-program';
-        programSpan.textContent = getProgramName(absence.program);
-
-        infoDiv.appendChild(nameSpan);
-        infoDiv.appendChild(programSpan);
-
-        studentDiv.appendChild(avatar);
-        studentDiv.appendChild(infoDiv);
-        tdStudent.appendChild(studentDiv);
-
-        // باقي الخلايا (التاريخ، الوقت، السبب، الزر)
-        let tdDate = document.createElement('td');
-        tdDate.textContent = formatDate(absence.date);
-
-        let tdTime = document.createElement('td');
-        tdTime.textContent = absence.time;
-
-        let tdReason = document.createElement('td');
-
-        let reasonBadge = document.createElement('span');
-        reasonBadge.className = 'reason-badge';
-        reasonBadge.textContent = absence.reason;
-
-        tdReason.appendChild(reasonBadge);
-
-        // Actions - زر الحذف فقط
-        let tdActions = document.createElement('td');
-
-        let actionDiv = document.createElement('div');
-        actionDiv.className = 'action-buttons';
-
-        // زر الحذف فقط
-        let deleteBtn = document.createElement('button');
-        deleteBtn.className = 'action-btn delete-btn';
-        deleteBtn.title = 'Delete Absence';
-        deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
-        deleteBtn.onclick = function () {
-            deleteAbsence(absence.id);
-        };
-
-        actionDiv.appendChild(deleteBtn);
-        tdActions.appendChild(actionDiv);
-
-        row.appendChild(tdStudent);
-        row.appendChild(tdDate);
-        row.appendChild(tdTime);
-        row.appendChild(tdReason);
-        row.appendChild(tdActions);
-
-        tbody.appendChild(row);
-    });
 }
 
 function addProfileModalStyles() {
