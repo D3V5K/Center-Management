@@ -15,11 +15,12 @@
 
 <body>
 
-    <!-- Edit Student  -->
-    <div style="height: 900px;" id="edit-student-modal" class="modal">
+    <!-- Edit Student Modal -->
+    <div id="edit-student-modal" class="modal" style="z-index: 9999;">
         <div class="modal-content">
             <div class="modal-header">
                 <h3><i class="fas fa-edit"></i> Edit Student</h3>
+                <span class="close-btn" onclick="closeEditModal()">&times;</span>
             </div>
             <div class="modal-body">
                 <div id="edit-student-form">
@@ -44,23 +45,30 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="edit-student-level">Level *</label>
+                        <label for="edit-student-level">school level *</label>
                         <select id="edit-student-level" class="form-select" required>
-                            <option value="">Select student level</option>
-                            <option value="beginner">Beginner</option>
-                            <option value="intermediate">Intermediate</option>
-                            <option value="advanced">Advanced</option>
-                            <option value="expert">Expert</option>
+                            <option value="1ere">1ère Année</option>
+                            <option value="2eme">2ème Année</option>
+                            <option value="3eme">3ème Année</option>
                         </select>
+
                     </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="secondary-btn" onclick="closeEditModal()">Cancel</button>
-                        <button type="button" class="primary-btn" onclick="saveStudentChanges()">Save Changes</button>
-                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-student-phone">Phone Number *</label>
+                    <input type="tel" id="edit-student-phone" class="form-input" required
+                        placeholder="e.g. +212 6XX-XXXXXX">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="secondary-btn" onclick="closeEditModal()">Cancel</button>
+                    <button type="button" class="primary-btn" onclick="saveStudentChanges()">Save Changes</button>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
 
@@ -76,6 +84,7 @@
             <a href="#" class="nav-link active" data-section="Dashboard"><i class="fas fa-chart-line"></i> Dashboard</a>
             <a href="#" class="nav-link" data-section="Student"><i class="fas fa-users"></i> Students</a>
             <a href="#" class="nav-link" data-section="Absences"><i class="fas fa-calendar-times"></i> Absences</a>
+            <a href="#" class="nav-link" data-section="Agenda"><i class="fas fa-calendar-alt"></i> Agenda</a>
         </nav>
         <div class="user-profile">
             <p class="Ens"><span>E</span><span class="N">N</span><span class="S">S</span></p>
@@ -118,6 +127,16 @@
                         <p class="stat-number" id="today-absences-count">0</p>
                     </div>
                 </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon programs">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Programs</h3>
+                        <p class="stat-number" id="programs-count">5</p>
+                    </div>
+                </div>
             </div>
 
             <div class="dashboard-content">
@@ -132,7 +151,7 @@
                             </div>
                             <div class="action-text">
                                 <h4>Register New Student</h4>
-                                <p class="action-shortcut">Shortcut: N</p>
+                                <p class="action-shortcut">Shortcut: Ctrl+N</p>
                             </div>
                         </button>
                         <button class="quick-action-btn" onclick="window.switchSection('Absences'); openAbsenceModal()">
@@ -141,13 +160,22 @@
                             </div>
                             <div class="action-text">
                                 <h4>Log New Absence</h4>
-                                <p class="action-shortcut">Shortcut: A</p>
+                                <p class="action-shortcut">Shortcut: Ctrl+A</p>
+                            </div>
+                        </button>
+                        <button class="quick-action-btn" onclick="window.switchSection('Agenda')">
+                            <div class="action-icon">
+                                <i class="fa-solid fa-calendar-alt"></i>
+                            </div>
+                            <div class="action-text">
+                                <h4>View Agenda</h4>
+                                <p class="action-shortcut">Shortcut: Ctrl+G</p>
                             </div>
                         </button>
                     </div>
                     <div class="pro-tip">
-                        <p><strong>Pro Tip:</strong> You can use keyboard shortcuts N for New Student and A for Log
-                            Absence.</p>
+                        <p><strong>Pro Tip:</strong> Use keyboard shortcuts: Ctrl+N (New Student), Ctrl+A (Log Absence),
+                            Ctrl+G (Agenda).</p>
                     </div>
                 </div>
 
@@ -180,62 +208,104 @@
                     programs.</p>
             </div>
 
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Total Students</h3>
+                        <p class="stat-number" id="students-total-count">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Program Distribution</h3>
+                        <p class="stat-number">5 Programs</p>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
             <div class="students-container">
-                <div class="students-layout">
-                    <div class="add-student-section card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-user-plus"></i> New Student</h3>
-                        </div>
-
-                        <div class="form-container">
-                            <div class="form-group">
-                                <label for="student-name">
-                                    <i class="fas fa-user"></i> Full Name
-                                </label>
-                                <input type="text" id="student-name" placeholder="e.g. Jane Doe" class="form-input">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="student-program">
-                                    <i class="fas fa-graduation-cap"></i> Program
-                                </label>
-                                <select id="student-program" class="form-select">
-                                    <option value="">Select a program</option>
-                                    <option value="web-dev">Web Development</option>
-                                    <option value="ui-ux">UI/UX Design</option>
-                                    <option value="data-science">Data Science</option>
-                                    <option value="cyber-security">Cyber Security</option>
-                                    <option value="digital-marketing">Digital Marketing</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="student-level">
-                                    <i class="fas fa-chart-line"></i> Level
-                                </label>
-                                <select id="student-level" class="form-select">
-                                    <option value="">Select student level</option>
-                                    <option value="beginner">Beginner</option>
-                                    <option value="intermediate">Intermediate</option>
-                                    <option value="advanced">Advanced</option>
-                                    <option value="expert">Expert</option>
-                                </select>
-                            </div>
-
-                            <button id="add-student-btn" class="primary-btn">
-                                <i class="fas fa-plus"></i> Add Student
-                            </button>
-                        </div>
+                <!-- Program Distribution Chart -->
+                <div class="card" style="margin-top: 20px; margin-bottom: 50px;">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-pie"></i> Program Distribution</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="programChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="students-layout">
+                <div class="add-student-section card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-user-plus"></i> New Student</h3>
                     </div>
 
-                    <!-- student list -->
-                    <div style="width: 110%;" class="students-list-section card">
-                        <div class="card-header">
-                            <div>
-                                <h3><i class="fas fa-users"></i> Students List</h3>
-                            </div>
-                            <select id="filter-program" class="filer">
-                                <option value="">Filter by program</option>
+                    <div class="form-container">
+                        <div class="form-group">
+                            <label for="student-name">
+                                <i class="fas fa-user"></i> Full Name
+                            </label>
+                            <input type="text" id="student-name" placeholder="e.g. Jane Doe" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="student-program">
+                                <i class="fas fa-graduation-cap"></i> Program
+                            </label>
+                            <select id="student-program" class="form-select">
+                                <option value="">Select a program</option>
+                                <option value="web-dev">Web Development</option>
+                                <option value="ui-ux">UI/UX Design</option>
+                                <option value="data-science">Data Science</option>
+                                <option value="cyber-security">Cyber Security</option>
+                                <option value="digital-marketing">Digital Marketing</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="student-level">
+                                <i class="fas fa-chart-line"></i> school level
+                            </label>
+                            <select id="student-level" class="form-select">
+                                <option value="">Select student level</option>
+                                <option value="1ere">1ère Année</option>
+                                <option value="2eme">2ème Année</option>
+                                <option value="3eme">3ème Année</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="student-phone">
+                                <i class="fas fa-phone"></i> Phone Number
+                            </label>
+                            <input type="tel" id="student-phone" placeholder="e.g. +212 6XX-XXXXXX" class="form-input">
+                        </div>
+
+                        <button id="add-student-btn" class="primary-btn">
+                            <i class="fas fa-plus"></i> Add Student
+                        </button>
+                    </div>
+                </div>
+
+                <!-- student list -->
+                <div class="students-list-section card">
+                    <div class="card-header">
+                        <div>
+                            <h3><i class="fas fa-users"></i> Students List</h3>
+                        </div>
+                        <div class="filter-search-container">
+                            <select id="filter-program" class="filter-select">
+                                <option value="">All Programs</option>
                                 <option value="web-dev">Web Development</option>
                                 <option value="ui-ux">UI/UX Design</option>
                                 <option value="data-science">Data Science</option>
@@ -248,32 +318,30 @@
                                     class="search-input">
                             </div>
                         </div>
+                    </div>
 
-                        <div class="table-container">
-                            <table class="students-table">
-                                <thead>
-                                    <tr>
-                                        <th>FULL NAME</th>
-                                        <th>PROGRAM</th>
-                                        <th>LEVEL</th>
-                                        <th>Edit</th>
-                                        <th>Add Absence</th>
-                                        <th>Remove</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="students-table-body">
-                                  
-                                </tbody>
-                            </table>
-                        </div>
-
-
+                    <div class="table-container">
+                        <table class="students-table">
+                            <thead>
+                                <tr>
+                                    <th>FULL NAME</th>
+                                    <th>ABSENCE STATUS</th>
+                                    <th>PROGRAM</th>
+                                    <th>LEVEL</th>
+                                    <!-- <th>PHONE</th> -->
+                                    <th style="text-align: center;">ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="students-table-body">
+                                <!-- Students will be loaded here -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-
-
         </div>
+
+
     </div>
 
     <!-- Absences Section -->
@@ -284,6 +352,105 @@
                 <p class="section-subtitle">Track and record student attendance issues and historical data.</p>
             </div>
 
+            <!-- Program Distribution Chart in Absences Section -->
+            <div class="program-distribution-card"
+                style="margin-top: 20px; padding: 15px; background: white; border-radius: 12px; border: 1px solid #e2e8f0;">
+                <h4 style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 15px; color: #1e293b;">
+                    <i class="fas fa-chart-pie" style="color: #4f46e5;"></i>
+                    Program Distribution (Filtered)
+                    <span style="font-size: 0.8rem; color: #64748b; margin-left: auto;">
+                        <i class="fas fa-hand-pointer"></i> Click on chart to see details
+                    </span>
+                </h4>
+                <div style="height: 200px; position: relative; cursor: pointer;" id="absences-program-chart-container">
+                    <canvas id="absencesProgramChart"></canvas>
+                </div>
+            </div>
+            <!-- Program Details Modal for Absences -->
+            <div id="program-absences-details-modal" class="modal">
+                <div class="modal-content"
+                    style="max-width: 800px; max-height: 90vh; display: flex; flex-direction: column;">
+                    <div class="modal-header">
+                        <h3><i class="fas fa-users"></i> Program Absence Details</h3>
+                        <span class="close-btn" onclick="closeProgramAbsencesModal()">&times;</span>
+                    </div>
+                    <div class="modal-body" style="flex: 1; overflow-y: auto; padding: 1.5rem;">
+                        <h4 id="program-absences-title">Web Development - Absence Details</h4>
+
+                        <!-- Program Statistics -->
+                        <div class="program-stats-container">
+                            <div class="program-stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-user-graduate"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h3>Students in Program</h3>
+                                    <p class="stat-number" id="program-absences-total-students">0</p>
+                                </div>
+                            </div>
+                            <div class="program-stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-calendar-times"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h3>Total Absences</h3>
+                                    <p class="stat-number" id="program-absences-total-count">0</p>
+                                </div>
+                            </div>
+                            <div class="program-stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-percent"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h3>Avg per Student</h3>
+                                    <p class="stat-number" id="program-absences-average">0</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Level Distribution -->
+                        <div class="level-distribution-section">
+                            <h5><i class="fas fa-layer-group"></i> Distribution by Level</h5>
+                            <div class="level-bars" id="program-absences-level-bars">
+                                <!-- Level bars will be generated here -->
+                            </div>
+                        </div>
+
+                        <!-- Students Table with Filter -->
+                        <div class="program-students-table">
+                            <div class="table-header">
+                                <h5><i class="fas fa-list"></i> Students with Absences</h5>
+                                <div class="table-actions">
+                                    <select id="filter-program-absences-level" class="filter-select-small"
+                                        onchange="filterProgramAbsencesStudents()">
+                                        <option value="">All Levels</option>
+                                        <option value="1ere">1ère Année</option>
+                                        <option value="2eme">2ème Année</option>
+                                        <option value="3eme">3ème Année</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="table-container-small" style="max-height: 300px; overflow-y: auto;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <thead
+                                        style="position: sticky; top: 0; background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%); z-index: 10;">
+                                        <tr>
+                                            <th style="color: white; padding: 12px 15px;">STUDENT</th>
+                                            <th style="color: white; padding: 12px 15px;">LEVEL</th>
+                                            <th style="color: white; padding: 12px 15px;">ABSENCES</th>
+                                            <th style="color: white; padding: 12px 15px;">LAST ABSENCE</th>
+                                            <th style="color: white; padding: 12px 15px;">ACTIONS</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="program-absences-students-table-body">
+                                        <!-- Students will be loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="absences-container">
                 <div class="absences-layout">
                     <div class="filter-panel-section card">
@@ -304,6 +471,17 @@
                                     <option value="data-science">Data Science</option>
                                     <option value="cyber-security">Cyber Security</option>
                                     <option value="digital-marketing">Digital Marketing</option>
+                                </select>
+                            </div>
+
+                            <!-- Student Selector -->
+                            <div class="form-group">
+                                <label for="filter-student-absences">
+                                    <i class="fas fa-user"></i> Select Student
+                                </label>
+                                <select id="filter-student-absences" class="form-select">
+                                    <option value="">All Students</option>
+                                    <!-- Students will be loaded dynamically -->
                                 </select>
                             </div>
 
@@ -344,6 +522,10 @@
                                         <span class="stat-label">Filtered:</span>
                                         <span class="stat-value" id="filtered-abs-count">0</span>
                                     </div>
+                                    <div class="stat-item">
+                                        <span class="stat-label">Today's Absences:</span>
+                                        <span class="stat-value" id="today-abs-filtered-count">0</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -363,22 +545,18 @@
                         </div>
 
                         <div class="table-container">
-                            <!-- Absences Table -->
                             <table class="absences-table">
-
                                 <thead>
                                     <tr>
-                                        <th>FULL NAME</th>
-                                        <th>DATE</th>
-                                        <th>TIME </th>
+                                        <th>STUDENT</th>
+                                        <th>SUBJECT</th>
+                                        <th>DATE & TIME</th>
                                         <th>REASON</th>
-                                        <th>Remove</th>
-
-
+                                        <th>ACTIONS</th>
                                     </tr>
                                 </thead>
                                 <tbody id="absences-table-body">
-                                    <!-- here add absences student  -->
+                                    <!-- Absences will be loaded here -->
                                 </tbody>
                             </table>
                         </div>
@@ -388,53 +566,398 @@
         </div>
     </div>
 
-    <!-- Simple Absence Modal -->
-    <div id="simple-absence-modal" class="modal" style="height: fit-content;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-calendar-times"></i> Add Absence</h3>
-                <span class="close-btn">&times;</span>
+    <!-- Agenda Section -->
+    <!-- Agenda Section - Professional Version -->
+    <div id="Agenda" class="page-section">
+        <div class="dashboard-container">
+            <div class="agenda-dashboard">
+
+                <!-- Professional Header with Navigation -->
+                <div class="agenda-professional-header">
+                    <div class="agenda-title-section">
+                        <h1>
+                            <i class="fas fa-calendar-alt"></i>
+                            Weekly Agenda
+                        </h1>
+                        <p>
+                            <i class="fas fa-clock"></i>
+                            Track and manage student absences
+                        </p>
+                    </div>
+                    <div class="agenda-navigator">
+                        <button id="prev-week-professional" class="agenda-nav-btn-professional">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <span class="current-week-badge">
+                            <i class="fas fa-calendar-week"></i>
+                            <span id="current-week-range-professional">Week of June 10, 2024</span>
+                        </span>
+                        <button id="next-week-professional" class="agenda-nav-btn-professional">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Modern Stats Cards -->
+                <div class="agenda-stats-professional">
+                    <div class="stat-card-modern">
+                        <div class="stat-icon-modern">
+                            <i class="fas fa-calendar-week"></i>
+                        </div>
+                        <div class="stat-content-modern">
+                            <div class="stat-label-modern">This Week</div>
+                            <div class="stat-number-modern" id="week-absences-count-professional">0</div>
+                            <div class="stat-trend">
+                                <i class="fas fa-arrow-up"></i> total absences
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card-modern">
+                        <div class="stat-icon-modern orange">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="stat-content-modern">
+                            <div class="stat-label-modern">Critical</div>
+                            <div class="stat-number-modern" id="critical-absences-count-professional">0</div>
+                            <div class="stat-trend">
+                                <i class="fas fa-users"></i> students
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card-modern">
+                        <div class="stat-icon-modern green">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-content-modern">
+                            <div class="stat-label-modern">Attendance Rate</div>
+                            <div class="stat-number-modern" id="attendance-rate">98%</div>
+                            <div class="stat-trend" style="color: #10b981;">
+                                <i class="fas fa-trend-up"></i> +2.5%
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card-modern">
+                        <div class="stat-icon-modern red">
+                            <i class="fas fa-user-clock"></i>
+                        </div>
+                        <div class="stat-content-modern">
+                            <div class="stat-label-modern">Today</div>
+                            <div class="stat-number-modern" id="today-absences-agenda">0</div>
+                            <div class="stat-trend">
+                                <i class="fas fa-calendar-day"></i> absences
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weekly Calendar Grid -->
+                <div class="week-calendar">
+                    <div class="week-calendar-header">
+                        <h3>
+                            <i class="fas fa-grid"></i>
+                            Weekly Overview
+                        </h3>
+                        <div class="filter-search-container" style="width: auto;">
+                            <select id="filter-program-agenda" class="filter-select" style="min-width: 180px;">
+                                <option value="">All Programs</option>
+                                <option value="web-dev">Web Development</option>
+                                <option value="ui-ux">UI/UX Design</option>
+                                <option value="data-science">Data Science</option>
+                                <option value="cyber-security">Cyber Security</option>
+                                <option value="digital-marketing">Digital Marketing</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Week Days Header -->
+                    <div class="week-days-grid">
+                        <div class="week-day-header">MONDAY</div>
+                        <div class="week-day-header">TUESDAY</div>
+                        <div class="week-day-header">WEDNESDAY</div>
+                        <div class="week-day-header">THURSDAY</div>
+                        <div class="week-day-header">FRIDAY</div>
+                        <div class="week-day-header">SATURDAY</div>
+                        <div class="week-day-header">SUNDAY</div>
+                    </div>
+
+                    <!-- Days Cards -->
+                    <div class="week-days-grid" id="professional-agenda-days">
+                        <!-- Days will be generated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Analytics & Insights -->
+                <div class="agenda-analytics">
+                    <!-- Absence Trend Chart -->
+                    <div class="analytics-card">
+                        <div class="analytics-card-header">
+                            <h4>
+                                <i class="fas fa-chart-line"></i>
+                                Absence Trend
+                            </h4>
+                            <span class="analytics-period">Last 7 days</span>
+                        </div>
+                        <div class="chart-container-small">
+                            <canvas id="agendaTrendChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Top Absent Students -->
+                    <div class="analytics-card">
+                        <div class="analytics-card-header">
+                            <h4>
+                                <i class="fas fa-trophy"></i>
+                                Top Absences
+                            </h4>
+                            <span class="analytics-period">This week</span>
+                        </div>
+                        <div class="top-absences-list" id="top-absent-students">
+                            <!-- Will be populated dynamically -->
+                            <div class="top-student-item">
+                                <div class="top-student-info">
+                                    <img src="https://ui-avatars.com/api/?name=No+Data&background=4f46e5&color=fff"
+                                        alt="No Data" class="top-student-avatar">
+                                    <div>
+                                        <div class="top-student-name">No absences yet</div>
+                                        <div class="top-student-program">This week is clear</div>
+                                    </div>
+                                </div>
+                                <div class="top-student-count">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions-grid">
+                    <div class="quick-action-card" onclick="window.switchSection('Absences'); openAbsenceModal();">
+                        <div class="quick-action-icon">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <div class="quick-action-text">
+                            <h5>Log Absence</h5>
+                            <span>Record new absence</span>
+                        </div>
+                    </div>
+                    <div class="quick-action-card" onclick="window.switchSection('Student')">
+                        <div class="quick-action-icon" style="background: #10b981;">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="quick-action-text">
+                            <h5>Add Student</h5>
+                            <span>Register new student</span>
+                        </div>
+                    </div>
+                    <div class="quick-action-card" onclick="generateWeeklyReport()">
+                        <div class="quick-action-icon" style="background: #f97316;">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <div class="quick-action-text">
+                            <h5>Export Report</h5>
+                            <span>Download PDF</span>
+                        </div>
+                    </div>
+                    <div class="quick-action-card" onclick="window.switchSection('Dashboard')">
+                        <div class="quick-action-icon" style="background: #64748b;">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                        <div class="quick-action-text">
+                            <h5>Dashboard</h5>
+                            <span>View overview</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="modal-body">
-                <form id="simple-absence-form">
+        </div>
+    </div>
+
+    <!-- Enhanced Absence Modal -->
+    <!-- Enhanced Absence Modal - FIXED SCROLL -->
+    <div id="absence-modal" class="modal" style="z-index: 9999;">
+        <div class="modal-content" style="max-width: 500px; max-height: 95vh; display: flex; flex-direction: column;">
+            <div class="modal-header" style="flex-shrink: 0;">
+                <h3><i class="fas fa-calendar-times"></i> Add New Absence</h3>
+                <span class="close-btn" onclick="closeAbsenceModal()">&times;</span>
+            </div>
+            <div class="modal-body" style="overflow-y: auto; padding: 1.5rem; flex: 1;">
+                <form id="absence-form">
                     <div class="form-group">
-                        <label for="simple-student">Student Name *</label>
-                        <input type="text" id="simple-student" class="form-input" required
-                            placeholder="Enter student name">
+                        <label for="absence-student">Student *</label>
+                        <select id="absence-student" class="form-select" required>
+                            <option value="">Select a student</option>
+                            <!-- Students will be loaded dynamically -->
+                        </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="simple-date">Date *</label>
-                        <input type="date" id="simple-date" class="form-input" required>
+                        <label for="absence-date">Date *</label>
+                        <input type="date" id="absence-date" class="form-input" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="simple-time">Time *</label>
-                        <input type="time" id="simple-time" class="form-input" required>
+                        <label for="absence-time">Time Period *</label>
+                        <select id="absence-time" class="form-select" required>
+                            <option value="">Select time period</option>
+                            <option value="9:00">Morning: 9:00 - 13:00</option>
+                            <option value="14:00">Afternoon: 14:00 - 17:00</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="simple-reason">Reason *</label>
-                        <textarea id="simple-reason" class="form-textarea" required
-                            placeholder="Enter reason for absence" rows="3"></textarea>
+                        <label for="absence-reason">Reason *</label>
+                        <select id="absence-reason" class="form-select" required>
+                            <option value="">Select reason</option>
+                            <option value="sick">Sick</option>
+                            <option value="personal">Personal Reasons</option>
+                            <option value="family">Family Emergency</option>
+                            <option value="transportation">Transportation Issues</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <!-- Subject Field - Nouveau -->
+                    <div class="form-group">
+                        <label for="absence-subject">
+                            <i class="fas fa-book"></i> Subject *
+                        </label>
+                        <select id="absence-subject" class="form-select" required>
+                            <option value="">Select a student first</option>
+                        </select>
                     </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="secondary-btn" onclick="closeSimpleModal()">Cancel</button>
-                        <button type="submit" class="primary-btn">Save</button>
+                    <div class="form-group">
+                        <label for="absence-notes">Additional Notes</label>
+                        <textarea id="absence-notes" class="form-textarea" placeholder="Optional notes..."
+                            rows="3"></textarea>
+                    </div>
+
+
+                    <div class="modal-footer" style="flex-shrink: 0; margin-top: 0.5rem; padding-top: 1rem;">
+                        <button type="button" class="secondary-btn" onclick="closeAbsenceModal()">Cancel</button>
+                        <button type="submit" class="primary-btn">Save Absence</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+    <!-- Day Details Modal -->
+    <div id="day-details-modal" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h3><i class="fas fa-calendar-day"></i> Day Details</h3>
+                <span class="close-btn" onclick="closeDayDetailsModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <h4 id="day-details-title">Monday, June 10, 2024</h4>
+                <div class="day-absences-list" id="day-absences-list">
+                    <!-- Absences for this day will be loaded here -->
+                </div>
+                <div class="day-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Total Absences:</span>
+                        <span class="stat-value" id="day-total-absences">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">By Program:</span>
+                        <span class="stat-value" id="day-program-breakdown">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- Program Details Modal -->
+    <!-- Program Details Modal - FIXED SCROLL -->
+    <div id="program-details-modal" class="modal">
+        <div class="modal-content" style="max-width: 800px; max-height: 90vh; display: flex; flex-direction: column;">
+            <div class="modal-header">
+                <h3><i class="fas fa-users"></i> Program Students</h3>
+                <span class="close-btn" onclick="closeProgramDetailsModal()">&times;</span>
+            </div>
+            <div class="modal-body" style="flex: 1; overflow-y: auto; padding: 1.5rem;">
+                <h4 id="program-details-title">Web Development Students</h4>
 
+                <!-- Program Statistics -->
+                <div class="program-stats-container">
+                    <div class="program-stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Total Students</h3>
+                            <p class="stat-number" id="program-total-students">0</p>
+                        </div>
+                    </div>
+                    <div class="program-stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>By Level</h3>
+                            <p class="stat-number" id="program-by-level">0 Levels</p>
+                        </div>
+                    </div>
+                    <div class="program-stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-times"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Total Absences</h3>
+                            <p class="stat-number" id="program-total-absences">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Level Distribution -->
+                <div class="level-distribution-section">
+                    <h5><i class="fas fa-layer-group"></i> Distribution by Level</h5>
+                    <div class="level-bars" id="level-bars">
+                        <!-- Level bars will be generated here -->
+                    </div>
+                </div>
+
+                <!-- Students Table with Scroll -->
+                <div class="program-students-table">
+                    <div class="table-header">
+                        <h5><i class="fas fa-list"></i> Students List</h5>
+                        <div class="table-actions">
+                            <select id="filter-program-level" class="filter-select-small"
+                                onchange="filterProgramStudents()">
+                                <option value="">All Levels</option>
+                                <option value="1ere">1ère Année</option>
+                                <option value="2eme">2ème Année</option>
+                                <option value="3eme">3ème Année</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-container-small" style="max-height: 250px; overflow-y: auto;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead
+                                style="position: sticky; top: 0; background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%); z-index: 10;">
+                                <tr>
+                                    <th style="color: white; padding: 12px 15px;">STUDENT</th>
+                                    <th style="color: white; padding: 12px 15px;">LEVEL</th>
+                                    <th style="color: white; padding: 12px 15px;">ABSENCES</th>
+                                    <th style="color: white; padding: 12px 15px;">PHONE</th>
+                                    <th style="color: white; padding: 12px 15px;">ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="program-students-table-body">
+                                <!-- Students will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <footer>
         <p>© Training Center App AMESIP 2026 , by Oussama.</p>
     </footer>
+
+    <!-- Add Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="script.js"></script>
-
 
 </body>
 
